@@ -25,7 +25,7 @@ else
     download http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 last_x264.tar.bz2 
     tar xjvf last_x264.tar.bz2
     cd x264-snapshot*
-    ./configure --prefix="$CUR/ffmpeg_build" --enable-static
+    ./configure --prefix="$CUR/ffmpeg_build" --enable-static --enable-pic
     make
     sudo make install
     make distclean
