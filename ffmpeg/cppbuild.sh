@@ -15,15 +15,63 @@ if [[ $PLATFORM == windows* ]]; then
     mkdir -p $INSTALL_DIR/include
     unzip -o msinttypes-r26.zip -d $INSTALL_DIR/include
 else
+    sudo apt-get update
+    sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev libgpac-dev \
+      libtheora-dev libtool libvorbis-dev libxfixes-dev pkg-config texi2html zlib1g-dev
+    
+
+    sudo apt-get install yasm
+
+    download http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 last_x264.tar.bz2 
+    tar xjvf last_x264.tar.bz2
+    cd x264-snapshot*
+    ./configure --prefix="../ffmpeg_build" --enable-static
+    make
+    sudo make install
+    make distclean
+    cd ..
+
+    download https://github.com/mstorsjo/fdk-aac/zipball/master fdk-aac.zip
+    unzip fdk-aac.zip
+    cd mstorsjo-fdk-aac*
+    autoreconf -fiv
+    ./configure --prefix="../ffmpeg_build" --disable-shared
+    make
+    sudo make install
+    make distclean
+    cd ..
+
+    sudo apt-get install libmp3lame-dev
+    sudo apt-get install libopus-dev
+
+    download http://webm.googlecode.com/files/libvpx-v1.3.0.tar.bz2 libvpx-v1.3.0.tar.bz2
+    tar xjvf libvpx-v1.3.0.tar.bz2
+    cd libvpx-v1.3.0
+    ./configure --prefix="../ffmpeg_build" --disable-examples
+    make
+    sudo make install
+    make clean
+    cd ..
+
+    
+
     FFMPEG_VERSION=2.2.1
     download http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.bz2 ffmpeg-$FFMPEG_VERSION.tar.bz2
-    download ftp://ftp.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2 last_stable_x264.tar.bz2
 
     tar -xjvf ffmpeg-$FFMPEG_VERSION.tar.bz2
-    mv ffmpeg-$FFMPEG_VERSION ffmpeg-$FFMPEG_VERSION-$PLATFORM
-    cd ffmpeg-$FFMPEG_VERSION-$PLATFORM
-    tar -xjvf ../last_stable_x264.tar.bz2
-    X264=`echo x264-snapshot-*`
+    cd ffmpeg
+    PKG_CONFIG_PATH="../ffmpeg_build/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
+    ./configure --prefix="../ffmpeg_build" --extra-cflags="-I../ffmpeg_build/include" \
+       --extra-ldflags="-L../ffmpeg_build/lib" --extra-libs="-ldl" --enable-gpl \
+       --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus \
+       --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-nonfree
+
+    make
+    sudo make install
+    make distclean
+
 fi
 
 case $PLATFORM in
@@ -57,13 +105,7 @@ case $PLATFORM in
         sudo make install
         ;;
     linux-x86_64)
-        cd $X264
-        ./configure --enable-static --enable-pic
-        make -j4
-        cd ..
-        ./configure --enable-shared --enable-gpl --enable-version3 --enable-runtime-cpudetect --disable-outdev=sdl --enable-libx264 --extra-cflags="-I$X264" --extra-ldflags="-L$X264" --extra-ldflags="-ldl" --libdir=/usr/local/lib64/ --shlibdir=/usr/local/lib64/
-        make -j4
-        sudo make install
+        
         ;;
     macosx-x86_64)
         cd $X264
