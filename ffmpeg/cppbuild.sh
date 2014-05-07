@@ -63,7 +63,7 @@ else
     PKG_CONFIG_PATH="$CUR/ffmpeg_build/lib/pkgconfig"
     export PKG_CONFIG_PATH
 
-    ./configure --prefix="$CUR/ffmpeg_build" --extra-cflags="-I$CUR/ffmpeg_build/include" --extra-ldflags="-L$CUR/ffmpeg_build/lib" --extra-libs="-ldl" --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-nonfree
+    ./configure --prefix="$CUR/ffmpeg_build" --extra-cflags="-I$CUR/ffmpeg_build/include" --extra-ldflags="-L$CUR/ffmpeg_build/lib" --extra-libs="-ldl" --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-nonfree --shlibdir=/usr/local/lib64/ --libdir=/usr/local/lib64 --enable-shared --enable-version3 --enable-runtime-cpudetect --disable-outdev=sdl
 
     make
     sudo make install
