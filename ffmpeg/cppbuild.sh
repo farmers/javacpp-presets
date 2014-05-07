@@ -16,16 +16,16 @@ if [[ $PLATFORM == windows* ]]; then
     unzip -o msinttypes-r26.zip -d $INSTALL_DIR/include
 else
     sudo apt-get update
-    sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev libgpac-dev \
-      libtheora-dev libtool libvorbis-dev libxfixes-dev pkg-config texi2html zlib1g-dev
-    
+    sudo apt-get -y install autoconf automake build-essential libass-dev libfreetype6-dev libgpac-dev libtheora-dev libtool libvorbis-dev libxfixes-dev pkg-config texi2html zlib1g-dev
+
+    CUR=$PWD    
 
     sudo apt-get install yasm
 
     download http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2 last_x264.tar.bz2 
     tar xjvf last_x264.tar.bz2
     cd x264-snapshot*
-    ./configure --prefix="../ffmpeg_build" --enable-static
+    ./configure --prefix="$CUR/ffmpeg_build" --enable-static
     make
     sudo make install
     make distclean
@@ -35,7 +35,7 @@ else
     unzip fdk-aac.zip
     cd mstorsjo-fdk-aac*
     autoreconf -fiv
-    ./configure --prefix="../ffmpeg_build" --disable-shared
+    ./configure --prefix="$CUR/ffmpeg_build" --disable-shared
     make
     sudo make install
     make distclean
@@ -47,7 +47,7 @@ else
     download http://webm.googlecode.com/files/libvpx-v1.3.0.tar.bz2 libvpx-v1.3.0.tar.bz2
     tar xjvf libvpx-v1.3.0.tar.bz2
     cd libvpx-v1.3.0
-    ./configure --prefix="../ffmpeg_build" --disable-examples
+    ./configure --prefix="$CUR/ffmpeg_build" --disable-examples
     make
     sudo make install
     make clean
@@ -60,13 +60,10 @@ else
 
     tar -xjvf ffmpeg-$FFMPEG_VERSION.tar.bz2
     cd ffmpeg
-    PKG_CONFIG_PATH="../ffmpeg_build/lib/pkgconfig"
+    PKG_CONFIG_PATH="$CUR/ffmpeg_build/lib/pkgconfig"
     export PKG_CONFIG_PATH
 
-    ./configure --prefix="../ffmpeg_build" --extra-cflags="-I../ffmpeg_build/include" \
-       --extra-ldflags="-L../ffmpeg_build/lib" --extra-libs="-ldl" --enable-gpl \
-       --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus \
-       --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-nonfree
+    ./configure --prefix="$CUR//ffmpeg_build" --extra-cflags="-I$CUR//ffmpeg_build/include" --extra-ldflags="-L$CUR//ffmpeg_build/lib" --extra-libs="-ldl" --enable-gpl --enable-libass --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-nonfree
 
     make
     sudo make install
